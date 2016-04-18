@@ -13,6 +13,7 @@ HOOKS_DIR="$HOME/.pomodoro/hooks"
 
 HOOKS_WORK="$HOOKS_DIR/work.d"
 HOOKS_PAUSE="$HOOKS_DIR/pause.d"
+HOOKS_COUNT="$HOOKS_DIR/count.d"
 HOOKS_EXIT="$HOOKS_DIR/exit.d"
 
 function init_dir() {
@@ -58,9 +59,6 @@ function print_help() {
 while getopts ":ph" opt
 do
     case $opt in
-        p)
-            PROGRESS_BAR=true
-            ;;
         h)
             print_help
             exit 0
@@ -95,7 +93,7 @@ do
     do
         sleep $UNIT
         i=$((1+i))
-        progress_bar $i
+        execute_hooks "$HOOKS_COUNT" "Pomodoro" $i $POMODORO
     done
 
     echo "Break!";
@@ -106,6 +104,6 @@ do
     do
         sleep $UNIT
         i=$((i+1))
-        echo "Pause: $i/$BREAK"
+        execute_hooks "$HOOKS_COUNT" "Break" $i $BREAK
     done
 done
