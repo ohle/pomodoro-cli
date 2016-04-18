@@ -4,5 +4,5 @@ PIPE=$HOME/.pomodoro/xmobar
 SCRIPTPATH=$(dirname "$0")
 SCRIPTPATH=$( (cd "$SCRIPTPATH" && pwd) )
 
-message=$(sh "$SCRIPTPATH"/progressbar "$1" "$2" "$3" | tr '\r' ' ')
+message=$(bash "$SCRIPTPATH"/progressbar "$1" "$2" "$3" | tr '\r' ' ')
 echo "$message" >> "$PIPE"
