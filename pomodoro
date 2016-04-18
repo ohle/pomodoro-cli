@@ -35,7 +35,7 @@ function execute_hooks() {
     if [ ! -d "$hook_dir" ]; then
         init_dir "$hook_dir"
     fi
-    find "$hook_dir" -maxdepth 1 -mindepth 1 -not -type d -executable | while read script
+    find "$hook_dir" -maxdepth 1 -mindepth 1 -not -type d | while read script
     do
         info "HOOK: $script" "$@"
         $script "$@"
