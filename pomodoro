@@ -71,16 +71,6 @@ do
     esac
 done
 
-function repeat() {
-    print '%*s' "$2" | tr ' ' "$1"
-}
-
-function progress_bar() {
-    local bars
-    bars=$(repeat '#' "$1")
-    printf "|%*s| %02d/%02d" $POMODORO "$bars" "$1" "$POMODORO"
-}
-
 # Do the pomodoro
 N_POMODORO=0
 while N_POMODORO=$((N_POMODORO+1))
