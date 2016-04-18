@@ -4,14 +4,8 @@ TICK=$2
 TOTAL=$3
 
 function repeat() {
-    print '%*s' "$2" | tr ' ' "$1"
+    printf '%*s' "$2" | tr ' ' "$1"
 }
 
-function progress_bar() {
-    local bars
-    bars=$(repeat '#' "$1")
-    printf "|%*s| %02d/%02d" "$TOTAL" "$bars" "$TICK" "$TOTAL"
-}
-
-# progress_bar
-echo -ne "$STATE $TICK/$TOTAL\r"
+bars=$(repeat '#' "$TICK")
+printf "%s: |%-*s| %02d/%02d\r" "$STATE" "$TOTAL" "$bars" "$TICK" "$TOTAL"
