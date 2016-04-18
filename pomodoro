@@ -16,8 +16,10 @@ HOOKS_PAUSE="$HOOKS_DIR/pause.d"
 HOOKS_COUNT="$HOOKS_DIR/count.d"
 HOOKS_EXIT="$HOOKS_DIR/exit.d"
 
+VERBOSE=false
+
 function init_dir() {
-    echo "INIT: Creating directory '$1'..."
+    info "INIT: Creating directory '$1'..."
     mkdir -p "$1" || (echo "Failed to create directory '$1.'"; exit 1;)
 }
 
@@ -36,13 +38,13 @@ function execute_hooks() {
     shift
     find "$hook_dir" -maxdepth 1 -mindepth 1 -not -type d -executable | while read script
     do
-        echo "HOOK: $script" "$@"
+        info "HOOK: $script" "$@"
         $script "$@"
     done
 }
 
 function on_exit() {
-    echo "Executing cleanup scripts..."
+    info "Executing cleanup scripts..."
     execute_hooks "$HOOKS_EXIT"
 }
 trap on_exit EXIT
@@ -52,16 +54,27 @@ function print_help() {
     echo ""
     echo "Options:"
     echo "  -p  Show progress bar"
+    echo "  -v  verbose mode"
     echo "  -h  Show this help"
 }
 
+function info() {
+  if [ "$VERBOSE" = true ]
+  then
+    echo "$@"
+  fi
+}
+
 # Parse options
-while getopts ":ph" opt
+while getopts ":phv" opt
 do
     case $opt in
         h)
             print_help
             exit 0
+            ;;
+        v)
+            VERBOSE=true
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -75,7 +88,7 @@ done
 N_POMODORO=0
 while N_POMODORO=$((N_POMODORO+1))
 do
-    echo "Work!"
+    info "Work!"
     execute_hooks "$HOOKS_WORK"
     notify-send  -i "$ICON_POMODORO" -t $LONG_NOTIFICATION_TIME "Start working!"
     i=0
@@ -86,7 +99,7 @@ do
         execute_hooks "$HOOKS_COUNT" "Pomodoro" $i $POMODORO
     done
 
-    echo "Break!";
+    info "Break!";
     notify-send -i "$ICON_BREAK" -t $LONG_NOTIFICATION_TIME "Break!"
     execute_hooks "$HOOKS_PAUSE"
     i=0
