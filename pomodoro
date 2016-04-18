@@ -2,11 +2,6 @@
 POMODORO=25
 BREAK=5
 
-ICON_POMODORO=face-glasses
-ICON_BREAK=face-smile
-
-LONG_NOTIFICATION_TIME=2000
-
 UNIT=1 # =minutes
 
 HOOKS_DIR="$HOME/.pomodoro/hooks"
@@ -89,7 +84,6 @@ while N_POMODORO=$((N_POMODORO+1))
 do
     info "Work!"
     execute_hooks "$HOOKS_WORK"
-    notify-send  -i "$ICON_POMODORO" -t $LONG_NOTIFICATION_TIME "Start working!"
     i=0
     while [ $i -lt $POMODORO ]
     do
@@ -99,7 +93,6 @@ do
     done
 
     info "Break!";
-    notify-send -i "$ICON_BREAK" -t $LONG_NOTIFICATION_TIME "Break!"
     execute_hooks "$HOOKS_PAUSE"
     i=0
     while [ $i -lt $BREAK ]

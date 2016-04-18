@@ -1,0 +1,9 @@
+#!/bin/sh
+TEXT="Start working!"
+if hash notify-send 2>/dev/null
+then
+    notify-send  -i face-glasses -t 2000 $TEXT
+elif hash osascript 2>/dev/null
+then
+    osascript -e "display notification \"$TEXT\""
+fi

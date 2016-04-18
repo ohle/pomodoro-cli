@@ -1,0 +1,9 @@
+#!/bin/sh
+TEXT="Break!"
+if hash notify-send 2>/dev/null
+then
+    notify-send  -i face-smile -t 2000 $TEXT
+elif hash osascript 2>/dev/null
+then
+    osascript -e "display notification \"$TEXT\" with title \"Pomodoro\""
+fi
