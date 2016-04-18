@@ -1,0 +1,107 @@
+#!/bin/bash
+POMODORO=25
+BREAK=5
+
+ICON_POMODORO=face-glasses
+ICON_BREAK=face-smile
+
+LONG_NOTIFICATION_TIME=2000
+
+UNIT=1 # =minutes
+
+HOOKS_DIR="$HOME/.pomodoro/hooks"
+
+HOOKS_WORK="$HOOKS_DIR/work.d"
+HOOKS_PAUSE="$HOOKS_DIR/pause.d"
+HOOKS_EXIT="$HOOKS_DIR/exit.d"
+
+function init_dir() {
+    echo "INIT: Creating directory '$1'..."
+    mkdir -p "$1" || (echo "Failed to create directory '$1.'"; exit 1;)
+}
+
+if [ ! -d "$HOOKS_DIR" ];
+then
+    init_dir "$HOOKS_DIR"
+fi
+
+function execute_hooks() {
+    if [ ! -d "$1" ]; then
+        init_dir "$1"
+    fi
+    find "$1" -maxdepth 1 -mindepth 1 -not -type d -executable | while read script
+    do
+        echo "HOOK: $script"
+        $script
+    done
+}
+
+function on_exit() {
+    echo "Executing cleanup scripts..."
+    execute_hooks "$HOOKS_EXIT"
+}
+trap on_exit EXIT
+
+function print_help() {
+    echo "USAGE: $0 [OPTION]"
+    echo ""
+    echo "Options:"
+    echo "  -p  Show progress bar"
+    echo "  -h  Show this help"
+}
+
+# Parse options
+while getopts ":ph" opt
+do
+    case $opt in
+        p)
+            PROGRESS_BAR=true
+            ;;
+        h)
+            print_help
+            exit 0
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            print_help
+            exit 1
+            ;;
+    esac
+done
+
+function repeat() {
+    print '%*s' "$2" | tr ' ' "$1"
+}
+
+function progress_bar() {
+    local bars
+    bars=$(repeat '#' "$1")
+    printf "|%*s| %02d/%02d" $POMODORO "$bars" "$1" "$POMODORO"
+}
+
+# Do the pomodoro
+N_POMODORO=0
+while N_POMODORO=$((N_POMODORO+1))
+do
+    echo "Work!"
+    execute_hooks "$HOOKS_WORK"
+    notify-send  -i "$ICON_POMODORO" -t $LONG_NOTIFICATION_TIME "Start working!"
+    i=0
+    while [ $i -lt $POMODORO ]
+    do
+        sleep $UNIT
+        i=$((1+i))
+        progress_bar $i
+    done
+
+    echo "Break!";
+    notify-send -i "$ICON_BREAK" -t $LONG_NOTIFICATION_TIME "Break!"
+    execute_hooks "$HOOKS_PAUSE"
+    i=0
+    while [ $i -lt $BREAK ]
+    do
+        sleep $UNIT
+        i=$((i+1))
+        echo "Pause: $i/$BREAK"
+    done
+done
