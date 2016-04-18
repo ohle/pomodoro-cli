@@ -26,13 +26,17 @@ then
 fi
 
 function execute_hooks() {
-    if [ ! -d "$1" ]; then
-        init_dir "$1"
+    local hook_dir
+    hook_dir=$1
+    shift
+    if [ ! -d "$hook_dir" ]; then
+        init_dir "$hook_dir"
     fi
-    find "$1" -maxdepth 1 -mindepth 1 -not -type d -executable | while read script
+    shift
+    find "$hook_dir" -maxdepth 1 -mindepth 1 -not -type d -executable | while read script
     do
-        echo "HOOK: $script"
-        $script
+        echo "HOOK: $script" "$@"
+        $script "$@"
     done
 }
 
