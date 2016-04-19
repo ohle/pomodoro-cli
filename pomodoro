@@ -10,7 +10,7 @@ then
     CONFIG_ROOT=$XDG_CONFIG_HOME
 fi
 
-CONFIG_DIR="$CONFIG_ROOT/.pomodoro-cli"
+CONFIG_DIR="$CONFIG_ROOT/.pomodoro"
 HOOKS_DIR="$CONFIG_DIR/hooks"
 
 PID_FILE="$CONFIG_DIR/pid"
