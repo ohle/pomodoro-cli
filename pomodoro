@@ -22,11 +22,13 @@ HOOKS_EXIT="$HOOKS_DIR/exit"
 
 VERBOSE=false
 
-if [ -f "$PID_FILE" ]
-then
-    echo "Another instance of $0 is already running. ($(cat "$PID_FILE"))"
-    exit 1
-fi
+function check_running() {
+    if [ -f "$PID_FILE" ]
+    then
+        echo "Another instance of $0 is already running. ($(cat "$PID_FILE"))"
+        exit 1
+    fi
+}
 
 function init_dir() {
     info "INIT: Creating directory '$1'..."
@@ -94,27 +96,32 @@ do
     esac
 done
 
-# Do the pomodoro
-N_POMODORO=0
-while N_POMODORO=$((N_POMODORO+1))
-do
-    info "Work!"
-    execute_hooks "$HOOKS_WORK"
-    i=0
-    while [ $i -lt $POMODORO ]
+function run() {
+    # Do the pomodoro
+    N_POMODORO=0
+    while N_POMODORO=$((N_POMODORO+1))
     do
-        sleep $UNIT
-        i=$((1+i))
-        execute_hooks "$HOOKS_COUNT" "Pomodoro" $i $POMODORO
-    done
+        info "Work!"
+        execute_hooks "$HOOKS_WORK"
+        i=0
+        while [ $i -lt $POMODORO ]
+        do
+            sleep $UNIT
+            i=$((1+i))
+            execute_hooks "$HOOKS_COUNT" "Pomodoro" $i $POMODORO
+        done
 
-    info "Break!";
-    execute_hooks "$HOOKS_PAUSE"
-    i=0
-    while [ $i -lt $BREAK ]
-    do
-        sleep $UNIT
-        i=$((i+1))
-        execute_hooks "$HOOKS_COUNT" "Break" $i $BREAK
+        info "Break!";
+        execute_hooks "$HOOKS_PAUSE"
+        i=0
+        while [ $i -lt $BREAK ]
+        do
+            sleep $UNIT
+            i=$((i+1))
+            execute_hooks "$HOOKS_COUNT" "Break" $i $BREAK
+        done
     done
-done
+}
+
+check_running
+run
