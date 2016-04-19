@@ -12,6 +12,7 @@ fi
 
 CONFIG_DIR="$CONFIG_ROOT/.pomodoro"
 HOOKS_DIR="$CONFIG_DIR/hooks"
+RES_DIR="$CONFIG_DIR/resources"
 
 PID_FILE="$CONFIG_DIR/pid"
 
@@ -58,6 +59,7 @@ function execute_hooks() {
     do
         log "HOOK: $script" "$@"
         export HOOKS_DIR
+        export RES_DIR
         export CONFIG_DIR
         $script "$@"
     done
