@@ -1,5 +1,5 @@
 #!/bin/bash
-PIPE="$CONFIG_DIR"/xmobar
+PIPE="$HOME/.pomodoro/xmobar"
 
 STATE=$1
 TICK=$2
@@ -11,7 +11,18 @@ function repeat() {
 
 function message() {
     bars=$(repeat '#' "$TICK")
-    printf "%s: |%-*s| %02d/%02d\r" "$STATE" "$TOTAL" "$bars" "$TICK" "$TOTAL"
+    case "$STATE" in
+        "Pomodoro")
+            SHORT_STATE="P"
+            ;;
+        "Break")
+            SHORT_STATE="B"
+            ;;
+        *)
+            SHORT_STATE="?"
+            ;;
+    esac
+    printf "%s: |%-*s| %02d/%02d\n" "$SHORT_STATE" "$TOTAL" "$bars" "$TICK" "$TOTAL"
 }
 
 message >> "$PIPE"
