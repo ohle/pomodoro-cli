@@ -2,7 +2,7 @@
 POMODORO=25
 BREAK=5
 
-UNIT=1 # =minutes
+UNIT=60 # =minutes
 
 CONFIG_ROOT=$HOME
 if [ -n "$XDG_CONFIG_HOME" ]
