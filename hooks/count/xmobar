@@ -1,8 +1,17 @@
 #!/bin/bash
 PIPE="$CONFIG_DIR"/xmobar
 
-SCRIPTPATH=$(dirname "$0")
-SCRIPTPATH=$( (cd "$SCRIPTPATH" && pwd) )
+STATE=$1
+TICK=$2
+TOTAL=$3
 
-message=$(bash "$SCRIPTPATH"/progressbar "$1" "$2" "$3" | tr '\r' ' ')
-echo "$message" >> "$PIPE"
+function repeat() {
+    printf '%*s' "$2" | tr ' ' "$1"
+}
+
+function message() {
+    bars=$(repeat '#' "$TICK")
+    printf "%s: |%-*s| %02d/%02d\r" "$STATE" "$TOTAL" "$bars" "$TICK" "$TOTAL"
+}
+
+message >> "$PIPE"
