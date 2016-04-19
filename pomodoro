@@ -72,6 +72,7 @@ function print_help() {
     echo "  -v  verbose mode"
     echo "  -s  stop currently running timer"
     echo "  -r  restart currently running timer"
+    echo "  -b  start with a break"
     echo "  -h  Show this help"
 }
 
@@ -85,7 +86,7 @@ function get_pid() {
 }
 
 # Parse options
-while getopts ":hvsr" opt
+while getopts ":hvsrb" opt
 do
     case $opt in
         h)
@@ -105,6 +106,9 @@ do
             kill "$running_pid";
             rm "$PID_FILE"
             ;;
+        b)
+            START_WITH_BREAK=true
+            ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
             print_help
@@ -117,17 +121,23 @@ function run() {
     echo $$ > "$PID_FILE"
     # Do the pomodoro
     N_POMODORO=0
+    skip_pomodoro="$START_WITH_BREAK"
     while N_POMODORO=$((N_POMODORO+1))
     do
-        log "Work!"
-        execute_hooks "$HOOKS_WORK"
-        i=0
-        while [ $i -lt $POMODORO ]
-        do
-            sleep $UNIT
-            i=$((1+i))
-            execute_hooks "$HOOKS_COUNT" "Pomodoro" $i $POMODORO
-        done
+        if [ ! "$skip_pomodoro" = true ]
+        then
+            log "Work!"
+            execute_hooks "$HOOKS_WORK"
+            i=0
+            while [ $i -lt $POMODORO ]
+            do
+                sleep $UNIT
+                i=$((1+i))
+                execute_hooks "$HOOKS_COUNT" "Pomodoro" $i $POMODORO
+            done
+        else
+            skip_pomodoro=false
+        fi
 
         log "Break!";
         execute_hooks "$HOOKS_PAUSE"
