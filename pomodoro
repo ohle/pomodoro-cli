@@ -57,6 +57,8 @@ function execute_hooks() {
     find "$hook_dir" -maxdepth 1 -mindepth 1 -not -type d | while read script
     do
         log "HOOK: $script" "$@"
+        export HOOKS_DIR
+        export CONFIG_DIR
         $script "$@"
     done
 }
