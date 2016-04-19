@@ -61,13 +61,6 @@ function execute_hooks() {
     done
 }
 
-function on_exit() {
-    log "Executing cleanup scripts..."
-    execute_hooks "$HOOKS_EXIT"
-    rm "$PID_FILE"
-}
-trap on_exit EXIT
-
 function print_help() {
     echo "USAGE: $0 [OPTION]"
     echo ""
@@ -77,8 +70,17 @@ function print_help() {
     echo "  -h  Show this help"
 }
 
+function get_pid() {
+    if [ ! -f "$PID_FILE" ]
+    then
+        echo "No instance of $0 is currently running"
+        exit 1
+    fi
+    cat "$PID_FILE"
+}
+
 # Parse options
-while getopts ":phv" opt
+while getopts ":phvs" opt
 do
     case $opt in
         h)
@@ -87,6 +89,11 @@ do
             ;;
         v)
             VERBOSE=true
+            ;;
+        s)
+            running_pid=$(get_pid)
+            kill "$running_pid"
+            exit 0;
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -125,4 +132,13 @@ function run() {
 }
 
 check_running
+
+function on_exit() {
+    log "Executing cleanup scripts..."
+    execute_hooks "$HOOKS_EXIT"
+    rm "$PID_FILE"
+}
+trap on_exit EXIT
+
 run
+
