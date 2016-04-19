@@ -97,6 +97,7 @@ do
 done
 
 function run() {
+    echo $$ >> "$PID_FILE"
     # Do the pomodoro
     N_POMODORO=0
     while N_POMODORO=$((N_POMODORO+1))
