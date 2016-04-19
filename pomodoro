@@ -66,6 +66,7 @@ function print_help() {
     echo ""
     echo "Options:"
     echo "  -v  verbose mode"
+    echo "  -s  stop currently running timer"
     echo "  -h  Show this help"
 }
 
