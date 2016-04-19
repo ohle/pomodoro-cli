@@ -22,7 +22,7 @@ function message() {
             SHORT_STATE="?"
             ;;
     esac
-    printf "%s: |%-*s| %02d/%02d\n" "$SHORT_STATE" "$TOTAL" "$bars" "$TICK" "$TOTAL"
+    printf "%s |%-*s|\n" "$SHORT_STATE" "$TOTAL" "$bars"
 }
 
 message >> "$PIPE"

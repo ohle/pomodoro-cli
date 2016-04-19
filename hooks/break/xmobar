@@ -1,0 +1,3 @@
+#!/bin/bash
+PIPE=$HOME/.pomodoro/xmobar
+echo "B ..." > "$PIPE"
