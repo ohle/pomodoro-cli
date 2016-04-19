@@ -1,5 +1,5 @@
 #!/bin/bash
-PIPE=$HOME/.pomodoro/xmobar
+PIPE="$CONFIG_DIR"/xmobar
 
 SCRIPTPATH=$(dirname "$0")
 SCRIPTPATH=$( (cd "$SCRIPTPATH" && pwd) )
