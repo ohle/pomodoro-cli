@@ -13,12 +13,20 @@ fi
 CONFIG_DIR="$CONFIG_ROOT/.pomodoro-cli"
 HOOKS_DIR="$CONFIG_DIR/hooks"
 
+PID_FILE="$CONFIG_DIR/pid"
+
 HOOKS_WORK="$HOOKS_DIR/work"
 HOOKS_PAUSE="$HOOKS_DIR/break"
 HOOKS_COUNT="$HOOKS_DIR/count"
 HOOKS_EXIT="$HOOKS_DIR/exit"
 
 VERBOSE=false
+
+if [ -f "$PID_FILE" ]
+then
+    echo "Another instance of $0 is already running. ($(cat "$PID_FILE"))"
+    exit 1
+fi
 
 function init_dir() {
     info "INIT: Creating directory '$1'..."
@@ -47,6 +55,7 @@ function execute_hooks() {
 function on_exit() {
     info "Executing cleanup scripts..."
     execute_hooks "$HOOKS_EXIT"
+    rm "$PID_FILE"
 }
 trap on_exit EXIT
 
