@@ -71,6 +71,7 @@ function print_help() {
     echo "Options:"
     echo "  -v  verbose mode"
     echo "  -s  stop currently running timer"
+    echo "  -r  restart currently running timer"
     echo "  -h  Show this help"
 }
 
@@ -84,7 +85,7 @@ function get_pid() {
 }
 
 # Parse options
-while getopts ":hvs" opt
+while getopts ":hvsr" opt
 do
     case $opt in
         h)
@@ -98,6 +99,10 @@ do
             running_pid=$(get_pid)
             kill "$running_pid"
             exit 0;
+            ;;
+        r)
+            running_pid=$(get_pid)
+            kill "$running_pid";
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
