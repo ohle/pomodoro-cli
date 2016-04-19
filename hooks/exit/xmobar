@@ -1,0 +1,5 @@
+#!/bin/sh
+PIPE="$CONFIG_DIR/xmobar"
+
+echo "Not running" >> "$PIPE"
+
