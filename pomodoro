@@ -103,6 +103,7 @@ do
         r)
             running_pid=$(get_pid)
             kill "$running_pid";
+            rm "$PID_FILE"
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -113,7 +114,7 @@ do
 done
 
 function run() {
-    echo $$ >> "$PID_FILE"
+    echo $$ > "$PID_FILE"
     # Do the pomodoro
     N_POMODORO=0
     while N_POMODORO=$((N_POMODORO+1))
