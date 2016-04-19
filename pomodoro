@@ -65,7 +65,6 @@ function print_help() {
     echo "USAGE: $0 [OPTION]"
     echo ""
     echo "Options:"
-    echo "  -p  Show progress bar"
     echo "  -v  verbose mode"
     echo "  -h  Show this help"
 }
@@ -80,7 +79,7 @@ function get_pid() {
 }
 
 # Parse options
-while getopts ":phvs" opt
+while getopts ":hvs" opt
 do
     case $opt in
         h)
