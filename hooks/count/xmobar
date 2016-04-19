@@ -14,15 +14,18 @@ function message() {
     case "$STATE" in
         "Pomodoro")
             SHORT_STATE="P"
+            COLOR="#268bd2"
             ;;
         "Break")
             SHORT_STATE="B"
+            COLOR="#859900"
             ;;
         *)
             SHORT_STATE="?"
+            COLOR="#dc322f"
             ;;
     esac
-    printf "%s |%-*s|\n" "$SHORT_STATE" "$TOTAL" "$bars"
+    printf "<fc=$COLOR>%s |%-*s|</fc>\n" "$SHORT_STATE" "$TOTAL" "$bars"
 }
 
 message >> "$PIPE"
